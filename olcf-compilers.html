@@ -1,23 +1,25 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Compiling at OLCF &mdash; AMReX-Astro 1.0 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
-      <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/theme_overrides.css?v=5694489b" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script src="_static/clipboard.min.js"></script>
-        <script src="_static/copybutton.js"></script>
+        <script src="_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=f281be69"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -54,7 +56,10 @@
 <li class="toctree-l1 current"><a class="reference internal" href="olcf.html">Working at OLCF</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Compiling at OLCF</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#summit">Summit</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#frontier">Frontier</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#frontier">Frontier</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hip-function-inlining">HIP Function Inlining</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="olcf-workflow.html">Managing Jobs at OLCF</a></li>
@@ -92,9 +97,9 @@
            <div itemprop="articleBody">
              
   <section id="compiling-at-olcf">
-<h1>Compiling at OLCF<a class="headerlink" href="#compiling-at-olcf" title="Permalink to this heading">¶</a></h1>
+<h1>Compiling at OLCF<a class="headerlink" href="#compiling-at-olcf" title="Link to this heading">¶</a></h1>
 <section id="summit">
-<h2>Summit<a class="headerlink" href="#summit" title="Permalink to this heading">¶</a></h2>
+<h2>Summit<a class="headerlink" href="#summit" title="Link to this heading">¶</a></h2>
 <p>In order to compile you will need to swap the xl module with gcc (you need to use atleast gcc/7.4.0 due to C++17 support):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><style type="text/css">
 span.prompt1:before {
@@ -136,28 +141,40 @@ doesn’t use this feature.</p></li>
 </div>
 </section>
 <section id="frontier">
-<h2>Frontier<a class="headerlink" href="#frontier" title="Permalink to this heading">¶</a></h2>
+<h2>Frontier<a class="headerlink" href="#frontier" title="Link to this heading">¶</a></h2>
 <p>log into: <code class="docutils literal notranslate"><span class="pre">frontier.olcf.ornl.gov</span></code></p>
 <p>see: <a class="reference external" href="https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#programming-environment">https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#programming-environment</a></p>
 <p>load modules:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">module<span class="w"> </span>load<span class="w"> </span>PrgEnv-gnu<span class="w"> </span>craype-accel-amd-gfx90a<span class="w"> </span>cray-mpich<span class="w"> </span>rocm<span class="w"> </span>amd-mixed</span>
-</pre></div></div><p>at the moment, that loads ROCm 5.3.0</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">module<span class="w"> </span>load<span class="w"> </span>PrgEnv-gnu</span>
+<span class="prompt1">module<span class="w"> </span>load<span class="w"> </span>cray-mpich/8.1.27</span>
+<span class="prompt1">module<span class="w"> </span>load<span class="w"> </span>craype-accel-amd-gfx90a</span>
+<span class="prompt1">module<span class="w"> </span>load<span class="w"> </span>amd-mixed/6.0.0</span>
+<span class="prompt1">module<span class="w"> </span>unload<span class="w"> </span>darshan-runtime</span>
+</pre></div></div><p>this will load ROCm 6.0.0</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>ROCm 5.4.3 does not seem to work with Castro–there are memory access issues
-in the burner</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Tabulate rates seem to exhibit a strange slow down on Frontier, so it is best
-to run without rate tabulation.</p>
+<p>Tabulate rates seem to exhibit a strange slow down on Frontier, so
+it is best to run without rate tabulation.</p>
 </div>
 <p>build via:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">make<span class="w"> </span><span class="nv">COMP</span><span class="o">=</span>gnu<span class="w"> </span><span class="nv">USE_HIP</span><span class="o">=</span>TRUE</span>
-</pre></div></div><div class="admonition note">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">make<span class="w"> </span><span class="nv">USE_HIP</span><span class="o">=</span>TRUE</span>
+</pre></div></div><section id="hip-function-inlining">
+<h3>HIP Function Inlining<a class="headerlink" href="#hip-function-inlining" title="Link to this heading">¶</a></h3>
+<p>By default, the ROCm compiler inlines all function calls in device code
+(for better compatibility with codes that use file- or function-scoped
+<code class="docutils literal notranslate"><span class="pre">__shared__</span></code> variables). This greatly increases the time it takes to
+compile and link, and may be detrimental for the templated Microphysics
+networks with lots of compile-time loop unrolling.</p>
+<p>This can be disabled by passing flags to <code class="docutils literal notranslate"><span class="pre">hipcc</span></code> to allow non-inlined
+function calls:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">make<span class="w"> </span><span class="nv">USE_HIP</span><span class="o">=</span>TRUE<span class="w"> </span><span class="nv">EXTRACXXFLAGS</span><span class="o">=</span><span class="s1">&#39;-mllvm -amdgpu-function-calls=true&#39;</span></span>
+</pre></div></div><p>See also <a class="reference external" href="https://rocm.docs.amd.com/en/docs-5.3.3/reference/rocmcc/rocmcc.html#rocm-compiler-interfaces">https://rocm.docs.amd.com/en/docs-5.3.3/reference/rocmcc/rocmcc.html#rocm-compiler-interfaces</a></p>
+<div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Compiling with <code class="docutils literal notranslate"><span class="pre">DEBUG=TRUE</span></code> takes a _very_ long time and may not work.</p>
+<p>Inline is automatically disabled via our <code class="docutils literal notranslate"><span class="pre">Microphysics</span></code> repository
+when it detects a HIP build.</p>
 </div>
+</section>
 </section>
 </section>
 

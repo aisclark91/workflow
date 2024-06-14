@@ -22,11 +22,25 @@ includes the restart logic to allow for job chaining.
 .. literalinclude:: ../../job_scripts/perlmutter/perlmutter.submit
    :language: sh
 
+Below is an example that runs on CPU-only nodes. Here ``ntasks-per-node``
+refers to number of MPI processes (used for distributed parallelism) per node,
+and ``cpus-per-task`` refers to number of hyper threads used per task
+(used for shared-memory parallelism). Since Perlmutter CPU node has
+2 sockets * 64 cores/socket * 2 threads/core = 256 threads, set ``cpus-per-task``
+to ``256/(ntasks-per-node)``. However, it is actually best to assign
+each OpenMP thread per physical core, so it is best to set ``OMP_NUM_THREADS`` to
+``cpus-per-task/2``. See more detailed instructions within the script.
+
+.. literalinclude:: ../../job_scripts/perlmutter-cpu/perlmutter_cpu.slurm
+   :language: sh
 
 .. note::
 
    Jobs should be run in your ``$SCRATCH`` directory. By default,
    SLURM will change directory into the submission directory.
+
+   Alternately, you can run in the common file system, ``$CFS/m3018``,
+   which everyone in the project has access to.
 
 Jobs are submitted as:
 
@@ -46,12 +60,31 @@ and an estimate of the start time can be found via:
 
    squeue --me --start
 
+to cancel a job, you would use ``scancel``.
+
+
+Filesystems
+^^^^^^^^^^^
+
+We can run on the common filesystem, CFS, to share files with everyone
+in the project.  For instance, for project ``m3018``, we would do:
+
+.. prompt:: bash
+
+   cd $CFS/m3018
+
+There is a 20 TB quota here, which can be checked via:
+
+.. prompt:: bash
+
+   showquota m3018
+
 
 Chaining
 ^^^^^^^^
 
 To chain jobs, such that one queues up after the previous job
-finished, use the ``chainslurm.sh`` script in that same directory:
+finished, use the `chainslurm.sh <https://github.com/AMReX-Astro/workflow/blob/main/job_scripts/slurm/chainslurm.sh>`_  script in that same directory:
 
 .. prompt:: bash
 

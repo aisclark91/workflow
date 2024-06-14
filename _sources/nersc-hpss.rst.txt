@@ -2,67 +2,80 @@
 Archiving Data to HPSS
 ======================
 
-.. note::
+The `NERSC HPSS Archive <https://docs.nersc.gov/filesystems/archive/>`_
+is a large tape library that can store the simulations files for long
+periods of time.  It is recommended to move your data to HPSS
+frequently, since the scratch filesystems fill up and NERSC will purge
+data periodically.
 
-   Access to the xfer queue is done by loading the ``esslurm`` queue:
+
+The script ``nersc.xfer.slurm`` in ``job_scripts/perlmutter/``:
+
+:download:`nersc.xfer.slurm <../../job_scripts/perlmutter/nersc.xfer.slurm>`
+
+can be used to archive data to
+HPSS automatically. This is submitted to the xfer queue and runs the
+script ``process.xrb`` in ``job_scripts/hpss/``:
+
+:download:`process.xrb <../../job_scripts/hpss/process.xrb>`
+
+which continually looks for output and stores it to HPSS.
+By default, the destination directory on HPSS will be have the same name
+as the directory your plotfiles are located in.  This can be changed by
+editing the``$HPSS_DIR`` variable at the top of ``process.xrb``.
+
+The following describes how to use the scripts:
+
+#. Copy the ``process.xrb`` script and the slurm script ``nersc.xfer.slurm``
+   into the directory with the plotfiles.
+
+#. Submit the archive job:
 
    .. prompt:: bash
 
-      module load esslurm
+      sbatch nersc.xfer.slurm
 
-   Then you can use ``sbatch`` and ``squeue`` to submit and monitor
-   jobs in the ``xfer`` queue.  Details are provided at:
-   https://docs.nersc.gov/jobs/examples/#xfer-queue
+   The script ``process.xrb`` is called from the xfer job and will run in
+   the background and continually wait until checkpoint or plotfiles are
+   created.
 
+   .. note::
 
-The script ``nersc.xfer.slurm`` in
-``workflow/job_scripts/cori-haswell/`` can be used to archive data to
-HPSS automatically. This is submitted to the xfer queue and runs the
-script ``process.xrb`` which continually looks for output and stores
-it to HPSS.
+      ``process.xrb`` always leaves the most recent plotfile and checkpoint file alone, since
+      data may still be written to it.
 
-To use the scripts, first create a directory in HPSS that has the same
-name as the directory on lustre you are running in (just the directory
-name, not the full path). E.g. if you are running in a directory call
-``wdconvect/`` run, then do:
+   The script will use ``htar`` to archive the plotfiles and
+   checkpoints to HPSS.
 
-.. prompt:: bash
+   If the ``htar`` command was successful, then the plotfiles are
+   copied into a ``plotfile/`` subdirectory. This is actually important,
+   since you don’t want to try archiving the data a second time and
+   overwriting the stored copy, especially if a purge took place. The
+   same is done with checkpoint files.
 
-   hsi
-   mkdir wdconvect_run
+Some additional notes:
 
-.. note::
+* If the ``ftime`` executable is in your path (``ftime.cpp`` lives in
+  ``amrex/Tools/Plotfile/``), then the script will create a file
+  called ``ftime.out`` that lists the name of the plotfile and the
+  corresponding simulation time.
 
-   If the ``hsi`` command prompts you for your password, you will need
-   to talk to the NERSC help desk to ask for password-less access to
-   HPSS.
+* Right when the job is run, the script will tar up all of the
+  diagnostic files, ``ftime.out``, submission script, and inputs and
+  archive them on HPSS. The ``.tar`` file is given a name that contains
+  the date-string to allow multiple archives to co-exist.
 
-The script ``process.xrb`` is called from the xfer job and will run in
-the background and continually wait until checkpoint or plotfiles are
-created (actually, it always leaves the most recent one alone, since
-data may still be written to it, so it waits until there are more than
-1 in the directory).  Then the script will use ``htar`` to archive the
-plotfiles and checkpoints to HPSS. If the ``htar`` command was
-successful, then the plotfiles are copied into a ``plotfile/``
-subdirectory. This is actually important, since you don’t want to try
-archiving the data a second time and overwriting the stored copy,
-especially if a purge took place. The same is done with checkpoint
-files.
+* When ``process.xrb`` is running, it creates a lockfile (called
+  ``process.jobid``) that ensures that only one instance of the script
+  is running at any one time.
 
-Additionally, if the ``ftime`` executable is in your path
-(``ftime.cpp`` lives in ``amrex/Tools/Plotfile/``), then
-the script will create a file called ``ftime.out`` that lists the name
-of the plotfile and the corresponding simulation time.
+  .. warning::
 
-Finally, right when the job is submitted, the script will tar up all
-of the diagnostic files, ``ftime.out``, submission script, inputs and
-probin, and archive them on HPSS. The .tar file is given a name that
-contains the date-string to allow multiple archives to co-exist.  When
-``process.xrb`` is running, it creates a lockfile (called
-``process.pid``) that ensures that only one instance of the script is
-running at any one time. Sometimes if the machine crashes, the
-``process.pid`` file will be left behind, in which case, the script
-aborts. Just delete that if you know the script is not running.
+     Sometimes if the job is not terminated normally, the
+     ``process.jobid`` file will be left behind. Later jobs should be
+     able to detect this and clean up the stale lockfile, but if this
+     doesn't work, you can delete the file if you know the script is not
+     running.
 
 Jobs in the xfer queue start up quickly. The best approach is to start
 one as you start your main job (or make it dependent on the main
