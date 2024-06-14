@@ -124,11 +124,9 @@ span.prompt1:before {
 </section>
 <section id="queues">
 <h2>Queues<a class="headerlink" href="#queues" title="Link to this heading">¶</a></h2>
-<p><a class="reference external" href="https://www.alcf.anl.gov/support/user-guides/polaris/queueing-and-running-jobs/job-and-queue-scheduling/index.html">https://www.alcf.anl.gov/support/user-guides/polaris/queueing-and-running-jobs/job-and-queue-scheduling/index.html</a></p>
 <p>For production jobs, you submit to the <code class="docutils literal notranslate"><span class="pre">prod</span></code> queue.</p>
-<p>For debugging jobs, there are two options: the <code class="docutils literal notranslate"><span class="pre">debug</span></code> queue for only one node use jobs, and
-<code class="docutils literal notranslate"><span class="pre">debug-scaling</span></code> for jobs that require between two nodes and 10-nodes. The former is used mainly for
-tunning the optimal parameters and compare the scalability of the allocated resources.</p>
+<p>For debugging jobs, there are two options: the <code class="docutils literal notranslate"><span class="pre">debug</span></code>  and <code class="docutils literal notranslate"><span class="pre">debug-scaling</span></code> options. More information can be found in:
+<a class="reference external" href="https://docs.alcf.anl.gov/polaris/running-jobs/#queues">https://docs.alcf.anl.gov/polaris/running-jobs/#queues</a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The smallest node count that seems to be allowed in production is 10 nodes.</p>
@@ -332,7 +330,8 @@ on the top of the conda-based environment provided by the module conda, and inst
 required modules on this virtual environment. Although is very tempting
 to clone the whole base environment and fully customize the installed conda packages, some
 modules like <code class="docutils literal notranslate"><span class="pre">mpi4py</span></code> may require access to the MPICH libraries that are tailored to be
-used only within the conda-base environment provided by the conda module.</p>
+used only within the conda-base environment provided by the conda module. All these instructions
+follow the guidelines publish here: <a class="reference external" href="https://docs.alcf.anl.gov/polaris/data-science-workflows/python/">https://docs.alcf.anl.gov/polaris/data-science-workflows/python/</a></p>
 <p>To create the virtual environment:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">module<span class="w"> </span>use<span class="w"> </span>/soft/modulefiles</span>
 <span class="prompt1">module<span class="w"> </span>load<span class="w"> </span>conda</span>
