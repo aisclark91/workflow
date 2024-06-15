@@ -325,13 +325,13 @@ mpiexec<span class="w"> </span>-n<span class="w"> </span><span class="si">${</sp
 </section>
 <section id="installing-python">
 <h2>Installing Python<a class="headerlink" href="#installing-python" title="Link to this heading">¶</a></h2>
-<p>The most recommended way to install python is to create a virtual environment
-on the top of the conda-based environment provided by the module conda, and install all the extra
-required modules on this virtual environment. Although is very tempting
+<p>The most recommended way to install python in polaris is to create a virtual environment
+on the top of the conda-based environment, provided by the module conda, and install all the extra
+required packages on this virtual environment by using <code class="docutils literal notranslate"><span class="pre">pip</span></code>. Although is very tempting
 to clone the whole base environment and fully customize the installed conda packages, some
-modules like <code class="docutils literal notranslate"><span class="pre">mpi4py</span></code> may require access to the MPICH libraries that are tailored to be
+modules like <code class="docutils literal notranslate"><span class="pre">mpi4py</span></code> may require access to the MPICH libraries that are only tailored to be
 used only within the conda-base environment provided by the conda module. All these instructions
-follow the guidelines publish here: <a class="reference external" href="https://docs.alcf.anl.gov/polaris/data-science-workflows/python/">https://docs.alcf.anl.gov/polaris/data-science-workflows/python/</a></p>
+follow the guidelines published here: <a class="reference external" href="https://docs.alcf.anl.gov/polaris/data-science-workflows/python/">https://docs.alcf.anl.gov/polaris/data-science-workflows/python/</a></p>
 <p>To create the virtual environment:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">module<span class="w"> </span>use<span class="w"> </span>/soft/modulefiles</span>
 <span class="prompt1">module<span class="w"> </span>load<span class="w"> </span>conda</span>
